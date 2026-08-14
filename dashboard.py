@@ -252,22 +252,15 @@ def create_sample_data():
     return pd.DataFrame(data)
 
 @st.cache_data
-def load_data():
-    """Load real data if available, otherwise use sample"""
+def get_sample_data():
+    """Cache only the expensive sample-data generation"""
+    return create_sample_data()
 
-    # ✅ Check if uploaded data exists in session state
+def load_data():
+    """Load real data if available, otherwise use sample — NOT cached itself"""
     if 'uploaded_df' in st.session_state and st.session_state['uploaded_df'] is not None:
         return st.session_state['uploaded_df']
-
-    # Check if CSV file exists locally
-    if os.path.exists('student_writings.csv'):
-        try:
-            df = pd.read_csv('student_writings.csv')
-            return df
-        except:
-            return create_sample_data()
-    else:
-        return create_sample_data()
+    return get_sample_data()
 
 # ================================================================
 # MAIN APP
